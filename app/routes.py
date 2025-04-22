@@ -321,7 +321,7 @@ def employeedashboardPage():
     public_vehicle=Trip.query.filter(Trip.employee_id==session['user'],Trip.travel_mode=="public_vehicle").count()/(total_trips*100 if total_trips!=0 else 1)*100
     reward_rankings = Employee.query.order_by(Employee.credits.desc()).all()
     all_employees=sum(i.credits for i in Employee.query.filter_by(employer_id=user.employer_id).all())
-    percent_complete = (user.credits / monthly_target) * 100
+    percent_complete = int((user.credits / monthly_target) * 100)
     leaderboard_position = calculate_leaderboard_position(user.credits, all_employees)
     print(leaderboard_position)
     context={
