@@ -1,0 +1,367 @@
+{% extends "base.html" %} {% block title %}How It Works | Carbon Credit Card{%
+endblock %} {% block extra_css %}
+<style>
+  .process-step {
+    position: relative;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .process-step:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .step-number {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 50px;
+    height: 50px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+  }
+
+  .role-card {
+    border-radius: 10px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+
+  .role-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .employee-card {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 5px solid #28a745;
+  }
+
+  .employer-card {
+    background-color: rgba(0, 123, 255, 0.1);
+    border-left: 5px solid #007bff;
+  }
+
+  .bank-card {
+    background-color: rgba(108, 117, 125, 0.1);
+    border-left: 5px solid #6c757d;
+  }
+
+  .admin-card {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 5px solid #dc3545;
+  }
+
+  .accordion-button:not(.collapsed) {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+  }
+
+  .accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+  }
+
+  .demo-img {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container">
+  <!-- Hero Section -->
+  <div class="row mb-5">
+    <div class="col-lg-8 offset-lg-2 text-center">
+      <h1 class="display-4 mb-4">How Carbon Credit Card Works</h1>
+      <p class="lead">
+        Our innovative platform tracks, rewards, and facilitates the trading of
+        carbon credits, creating a sustainable ecosystem that benefits both
+        individuals and organizations.
+      </p>
+    </div>
+  </div>
+
+  <!-- Core Concept Section -->
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <h2>Understanding Carbon Credits</h2>
+      <p>
+        Carbon credits represent reductions in greenhouse gas emissions. By
+        choosing sustainable transportation options like cycling, walking, or
+        public transit, users earn carbon credits that can be accumulated,
+        tracked, and traded within our system.
+      </p>
+      <p>
+        Our platform incentivizes eco-friendly behaviors by converting
+        carbon-saving actions into valuable credits that can be used for various
+        rewards and benefits.
+      </p>
+      <div class="mt-4">
+        <h4>Why Carbon Credits Matter</h4>
+        <ul>
+          <li>Provides measurable environmental impact metrics</li>
+          <li>Creates financial incentives for sustainable choices</li>
+          <li>
+            Enables organizations to meet and exceed carbon reduction goals
+          </li>
+          <li>Connects individual actions to global environmental outcomes</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <img
+        src="{{ url_for('static', filename='images/carbon-credit-concept.jpg') }}"
+        alt="Carbon Credit Concept"
+        class="img-fluid rounded shadow"
+      />
+    </div>
+  </div>
+
+  <!-- How It Works Process -->
+  <h2 class="text-center mb-4">The Carbon Credit Process</h2>
+
+  <div class="process-step">
+    <div class="step-number">1</div>
+    <h3>Log Your Commute</h3>
+    <div class="row align-items-center">
+      <div class="col-md-7">
+        <p>
+          Employees track their daily commutes through our user-friendly
+          interface. By providing transport method, start and end locations, and
+          distance traveled, our system calculates the carbon savings compared
+          to a standard gasoline vehicle commute.
+        </p>
+        <p>
+          Our algorithm uses the following carbon savings rates (kg CO₂ per km):
+        </p>
+        <div class="row">
+          <div class="col-sm-6">
+            <ul>
+              <li>Bicycle: 0.192 kg/km</li>
+              <li>Walking: 0.192 kg/km</li>
+              <li>Bus: 0.103 kg/km</li>
+              <li>Train: 0.120 kg/km</li>
+            </ul>
+          </div>
+          <div class="col-sm-6">
+            <ul>
+              <li>Carpool: 0.096 kg/km</li>
+              <li>Electric Car: 0.072 kg/km</li>
+              <li>Motorcycle: 0.061 kg/km</li>
+              <li>Work from Home: 0.192 kg/km</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <img
+          src="{{ url_for('static', filename='images/log-commute.jpg') }}"
+          alt="Logging Commute"
+          class="img-fluid rounded demo-img"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="step-number">2</div>
+    <h3>Earn Carbon Credits</h3>
+    <div class="row align-items-center">
+      <div class="col-md-5">
+        <img
+          src="{{ url_for('static', filename='images/earn-credits.jpg') }}"
+          alt="Earning Carbon Credits"
+          class="img-fluid rounded demo-img"
+        />
+      </div>
+      <div class="col-md-7">
+        <p>
+          Once a commute is logged, our system automatically calculates the
+          carbon saved based on the transport method and distance. These savings
+          are immediately converted to carbon credits in your account.
+        </p>
+        <p>The formula is simple:</p>
+        <div class="bg-light p-3 rounded">
+          <code>Carbon Credits = Savings Rate × Distance (km)</code>
+        </div>
+        <p class="mt-3">For example, a 10 km bicycle commute would earn:</p>
+        <div class="bg-light p-3 rounded">
+          <code>0.192 kg/km × 10 km = 1.92 carbon credits</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="step-number">3</div>
+    <h3>Track Your Impact</h3>
+    <div class="row align-items-center">
+      <div class="col-md-7">
+        <p>
+          Our comprehensive dashboard provides visual analytics of your carbon
+          savings. View your impact by transport method, track your carbon
+          credit balance, and see your contribution to environmental goals.
+        </p>
+        <p>Features include:</p>
+        <ul>
+          <li>Historical commute data and carbon savings</li>
+          <li>Visual charts breaking down savings by transport method</li>
+          <li>Complete transaction history</li>
+          <li>
+            Progress toward personal and organizational sustainability targets
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-5">
+        <img
+          src="{{ url_for('static', filename='images/track-impact.jpg') }}"
+          alt="Tracking Environmental Impact"
+          class="img-fluid rounded demo-img"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="step-number">4</div>
+    <h3>Trade & Utilize Credits</h3>
+    <div class="row align-items-center">
+      <div class="col-md-5">
+        <img
+          src="{{ url_for('static', filename='images/trade-credits.jpg') }}"
+          alt="Trading Carbon Credits"
+          class="img-fluid rounded demo-img"
+        />
+      </div>
+      <div class="col-md-7">
+        <p>
+          Carbon credits have real value in our ecosystem. Employers can collect
+          credits from their employees and trade them with other organizations.
+          This creates a marketplace for carbon offsets that rewards sustainable
+          practices.
+        </p>
+        <p>Credits can be used for:</p>
+        <ul>
+          <li>Meeting corporate sustainability goals</li>
+          <li>Trading with other organizations</li>
+          <li>Redeeming for rewards and benefits</li>
+          <li>Contributing to certified environmental projects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Roles Section -->
+  <h2 class="text-center mb-4">Platform Roles & Features</h2>
+  <div class="row mb-5">
+    <div class="col-md-6 mb-4">
+      <div class="role-card employee-card">
+        <h3><i class="bi bi-person-fill me-2"></i>Employees</h3>
+        <p>
+          Individual users who log their sustainable commutes and earn carbon
+          credits.
+        </p>
+        <h5>Features:</h5>
+        <ul>
+          <li>Log daily commutes with transport method</li>
+          <li>Track personal carbon savings and credit balance</li>
+          <li>View historical commute data with visual analytics</li>
+          <li>Connect with employer for collective impact</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="role-card employer-card">
+        <h3><i class="bi bi-building me-2"></i>Employers</h3>
+        <p>
+          Organizations that manage employee accounts and aggregate carbon
+          credits.
+        </p>
+        <h5>Features:</h5>
+        <ul>
+          <li>Approve and manage employee accounts</li>
+          <li>View organization-wide carbon savings</li>
+          <li>Trade carbon credits with other organizations</li>
+          <li>Monitor transaction history and sustainability metrics</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="role-card bank-card">
+        <h3><i class="bi bi-bank me-2"></i>Financial Partners</h3>
+        <p>
+          Financial institutions that oversee the carbon credit market and
+          ensure compliance.
+        </p>
+        <h5>Features:</h5>
+        <ul>
+          <li>Approve employer registrations</li>
+          <li>Monitor credit transactions for compliance</li>
+          <li>Generate system-wide impact reports</li>
+          <li>Ensure integrity of the carbon credit ecosystem</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="role-card admin-card">
+        <h3><i class="bi bi-gear-fill me-2"></i>System Administrators</h3>
+        <p>
+          Platform managers who maintain the system and ensure its proper
+          operation.
+        </p>
+        <h5>Features:</h5>
+        <ul>
+          <li>Manage all user accounts and permissions</li>
+          <li>View comprehensive system statistics</li>
+          <li>Configure system settings and parameters</li>
+          <li>Ensure platform security and performance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+
+  <!-- Getting Started -->
+  <div class="row mb-5">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="bg-light p-4 p-md-5 rounded text-center">
+        <h2>Ready to Make an Impact?</h2>
+        <p class="lead mb-4">
+          Join thousands of individuals and organizations using the Carbon
+          Credit Card platform to track, reward, and trade sustainable commuting
+          choices.
+        </p>
+        <div class="row justify-content-center">
+          <div class="col-md-5 mb-3">
+            <a href="" class="btn btn-success w-100">Create Your Account</a>
+          </div>
+          <div class="col-md-5 mb-3">
+            <a href="" class="btn btn-outline-success w-100">Log In</a>
+          </div>
+        </div>
+        <p class="mt-3">
+          <small
+            >Have questions? <a href="">Contact our support team</a> for
+            assistance.</small
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

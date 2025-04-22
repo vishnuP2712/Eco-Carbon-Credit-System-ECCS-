@@ -1,0 +1,725 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - Carbon Credit
+Card{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="../../static/css/dashboard/admin.css" />
+{% endblock %} {% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Bank Dashboard</h1>
+    <div>
+      <span class="badge bg-success p-2">
+        Logged in as:{{ session['user']}}
+      </span>
+    </div>
+  </div>
+
+  <!-- Flash Messages -->
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Welcome to the Bank dashboard!
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <!-- Dashboard Stats -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white mb-3 dashboard-stats">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <h2 class="mb-0">{{total_users}}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white mb-3 dashboard-stats">
+        <div class="card-body">
+          <h5 class="card-title">Carbon Credits</h5>
+          <h2 class="mb-0">{{total_credits}}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white mb-3 dashboard-stats">
+        <div class="card-body">
+          <h5 class="card-title">Pending Approvals</h5>
+          <h2 class="mb-0">{{pending_accounts}}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-dark mb-3 dashboard-stats">
+        <div class="card-body">
+          <h5 class="card-title">all Transactions</h5>
+          <h2 class="mb-0">{{total_transaction}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div class="row">
+    <div class="col-12">
+      <ul class="nav nav-pills mb-3" id="admin-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="users-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#users"
+            type="button"
+            role="tab"
+            aria-controls="users"
+            aria-selected="true"
+          >
+            User Management
+          </button>
+        </li>
+        <!-- <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="carbon-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#carbon"
+            type="button"
+            role="tab"
+            aria-controls="carbon"
+            aria-selected="false"
+          >
+            Carbon Credits
+          </button>
+        </li> -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="transactions-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#transactions"
+            type="button"
+            role="tab"
+            aria-controls="transactions"
+            aria-selected="false"
+          >
+            Transactions
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="admin-tabsContent">
+        <!-- Users Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="users"
+          role="tabpanel"
+          aria-labelledby="users-tab"
+        >
+          <div class="d-flex justify-content-between mb-3">
+            <h3>User Management</h3>
+          </div>
+
+          <!-- Search & Filter Bar -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form class="row g-3" method="GET">
+                <div class="col-md-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="search"
+                    placeholder="Search by name, email..."
+                  />
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" name="role">
+                    <option value="">All Roles</option>
+                    <option value="employee">Employee</option>
+                    <option value="employer">Employer</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" name="status">
+                    <option value="">All Status</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" class="btn btn-primary w-100">
+                    Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- User Table -->
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Carbon Credits</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %} {% if user.employee_id %}
+                <tr>
+                  <td>{{ user.employee_id }}</td>
+                  <td>{{ user.first_name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td><span class="badge bg-success">Employee</span></td>
+                  <td>{{ user.credits }}</td>
+                  <td>
+                    <span
+                      class="badge bg-{% if user.is_active==1 %}success{% else %}danger{% endif %}"
+                    >
+                      {% if user.is_active==1 %}Approved{% else %}Rejected{%
+                      endif %}
+                    </span>
+                  </td>
+                  <td>2024-12-10</td>
+                  <td>
+                    <div class="btn-group">
+                      <a
+                        href="{{ url_for('main.delete_user', user_id=user.employee_id, usertype='employee') }}"
+                        class="btn btn-sm btn-danger"
+                      >
+                        Delete
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td>{{ user.employer_id }}</td>
+                  <td>{{ user.company_name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td><span class="badge bg-primary">Employer</span></td>
+                  <td>{{ user.credits }}</td>
+                  <td>
+                    <span
+                      class="badge bg-{% if user.is_approved==1 %}success{% else %}warning{% endif %}"
+                    >
+                      {% if user.is_approved==1 %}Approved{% else %}Pending{%
+                      endif %}
+                    </span>
+                  </td>
+                  <td>2024-12-10</td>
+                  <td>
+                    <div class="btn-group">
+                      {% if user.is_active==0 %}
+
+                      <a
+                        href="{{ url_for('main.approve_users', user_id=user.employer_id, usertype='employer') }}"
+                        class="btn btn-sm btn-primary"
+                        >accept</a
+                      >
+                      {% endif %}
+                      <a
+                        href="{{ url_for('main.delete_user', user_id=user.employer_id, usertype='employer') }}"
+                        class="btn btn-sm btn-danger"
+                      >
+                        Delete
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endif %} {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Carbon Credits Tab -->
+        <div
+          class="tab-pane fade"
+          id="carbon"
+          role="tabpanel"
+          aria-labelledby="carbon-tab"
+        >
+          <div class="d-flex justify-content-between mb-3">
+            <h3>Carbon Credits Management</h3>
+            <button
+              class="btn btn-success"
+              data-bs-toggle="modal"
+              data-bs-target="#allocateCreditsModal"
+            >
+              <i class="bi bi-plus-circle"></i> Allocate Credits
+            </button>
+          </div>
+
+          <!-- Carbon Credits Stats -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Total Credits Issued</h5>
+                  <h2 class="text-success">25,680</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Credits In Circulation</h5>
+                  <h2 class="text-primary">18,245</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Credits Redeemed</h5>
+                  <h2 class="text-info">7,435</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Allocations Table -->
+          <h4>Recent Credit Allocations</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Reason</th>
+                  <th>Allocated By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>101</td>
+                  <td>johndoe</td>
+                  <td>50</td>
+                  <td>2025-04-01 10:15</td>
+                  <td>Monthly allocation</td>
+                  <td>adminuser</td>
+                </tr>
+                <tr>
+                  <td>102</td>
+                  <td>janesmith</td>
+                  <td>120</td>
+                  <td>2025-04-01 09:30</td>
+                  <td>Sustainability award</td>
+                  <td>adminuser</td>
+                </tr>
+                <tr>
+                  <td>103</td>
+                  <td>bankuser</td>
+                  <td>500</td>
+                  <td>2025-03-31 14:45</td>
+                  <td>Partnership program</td>
+                  <td>adminuser</td>
+                </tr>
+                <tr>
+                  <td>104</td>
+                  <td>newuser</td>
+                  <td>50</td>
+                  <td>2025-04-01 08:20</td>
+                  <td>New user bonus</td>
+                  <td>adminuser</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Allocate Credits Modal -->
+          <div
+            class="modal fade"
+            id="allocateCreditsModal"
+            tabindex="-1"
+            aria-labelledby="allocateCreditsModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="allocateCreditsModalLabel">
+                    Allocate Carbon Credits
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form action="#" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="user_id" class="form-label"
+                        >Select User</label
+                      >
+                      <select
+                        class="form-select"
+                        id="user_id"
+                        name="user_id"
+                        required
+                      >
+                        <option value="">-- Select User --</option>
+                        <option value="1">
+                          johndoe (john.doe@example.com)
+                        </option>
+                        <option value="2">
+                          janesmith (jane.smith@example.com)
+                        </option>
+                        <option value="3">bankuser (bank@example.com)</option>
+                        <option value="4">
+                          newuser (new.user@example.com)
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="amount" class="form-label"
+                        >Credit Amount</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="amount"
+                        name="amount"
+                        step="0.01"
+                        min="0"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="reason" class="form-label">Reason</label>
+                      <textarea
+                        class="form-control"
+                        id="reason"
+                        name="reason"
+                        rows="3"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Allocate Credits
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div
+          class="tab-pane fade"
+          id="transactions"
+          role="tabpanel"
+          aria-labelledby="transactions-tab"
+        >
+          <h3>Transaction History</h3>
+
+          <!-- Search & Filter -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form class="row g-3" method="GET">
+                <div class="col-md-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="user"
+                    placeholder="User email or ID"
+                  />
+                </div>
+
+                <div class="col-md-3">
+                  <input type="date" class="form-control" name="start_date" />
+                </div>
+                <div class="col-md-3">
+                  <input type="date" class="form-control" name="end_date" />
+                </div>
+                <div class="col-md-3">
+                  <button type="submit" class="btn btn-primary w-100">
+                    Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for trade in trades%} x
+                <tr>
+                  <td>{{ trade.id }}</td>
+
+                  <td>{{ trade.sender_id }}</td>
+                  <td>{{ trade.receiver_id }}</td>
+                  <td>{{ trade.amount }}</td>
+                  <td>{{ trade.timestamp }}</td>
+                  <td>
+                    <span
+                      class="badge bg-{% if trade.isComplete %}success {% else %}warning {% endif %}"
+                      >{% if trade.isComplete %} Completed{% else %}Pending {%
+                      endif %}</span
+                    >
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-info"
+                      data-bs-toggle="modal"
+                      data-bs-target="#transactionModal1001"
+                    >
+                      Details
+                    </button>
+
+                    <!-- Transaction Details Modal -->
+                    <div
+                      class="modal fade"
+                      id="transactionModal1001"
+                      tabindex="-1"
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">
+                              Transaction Details #1001
+                            </h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <p><strong>id:</strong> {{ trade.id }}</p>
+                            <p><strong>From:</strong> {{ trade.sender_id }}</p>
+                            <p><strong>To:</strong> {{ trade.receiver_id }}</p>
+                            <p><strong>Amount:</strong> {{ trade.amount }}</p>
+                            <p><strong>Date:</strong> {{ trade.timestamp }}</p>
+                            <p>
+                              <strong>Status:</strong> {% if trade.isComplete %}
+                              complete {% else %} pending {% endif %}
+                            </p>
+                            <p>
+                              <strong>Description:</strong> {% if trade.comment
+                              %} {{comment}} {% else %} "none" {% endif %}
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User Delete Modals -->
+<div
+  class="modal fade"
+  id="deleteModal1"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel1">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete user <strong>johndoe</strong>? This
+        action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger">Delete User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="deleteModal2"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel2"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel2">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete user <strong>janesmith</strong>? This
+        action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger">Delete User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="deleteModal3"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel3"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel3">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete user <strong>bankuser</strong>? This
+        action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger">Delete User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="deleteModal4"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel4"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel4">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete user <strong>newuser</strong>? This
+        action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger">Delete User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="deleteModal5"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel5"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel5">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete user <strong>adminuser</strong>? This
+        action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger">Delete User</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="../../static/js/bank/dashboard.js"></script>
+{% endblock %}

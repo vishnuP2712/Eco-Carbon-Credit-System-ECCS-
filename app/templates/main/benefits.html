@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block title %}Home - Carbon Credit Card{% endblock
+%} {% block extra_css %}
+<link rel="stylesheet" href="../../static/css/main/benefits.css" />
+{% endblock %} {% block content %}
+<header style="color: var(--primary-color)" class="text-center py-5 text-white">
+  <h1 style="color: white">Carbon Credit Card</h1>
+  <p class="fw-light fs-5">
+    Rewarding sustainable commuting for a greener tomorrow
+  </p>
+</header>
+
+<section class="text-center my-5">
+  <h2 style="color: var(--primary-color)">
+    Turn Your Green Commute Into Rewards
+  </h2>
+  <p class="lead">
+    The Carbon Credit Card program rewards employees for choosing eco-friendly
+    transportation. Earn credits, reduce your carbon footprint, and contribute
+    to environmental sustainability.
+  </p>
+</section>
+
+<section class="my-5">
+  <h2 class="text-center mb-4" style="color: var(--primary-color)">
+    Benefits For Everyone
+  </h2>
+  <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+    <!-- Employees Card -->
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="card-icon mb-3">
+            <i class="bi bi-person-fill fs-3"></i>
+          </div>
+          <h5 class="card-title" style="color: var(--primary-color)">
+            For Employees
+          </h5>
+          <ul class="text-start mt-3" style="color: var(--text-primary)">
+            <li>Earn carbon credits for sustainable commuting</li>
+            <li>Track your personal environmental impact</li>
+            <li>Access commute analytics</li>
+            <li>Convert credits to rewards or donations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employers Card -->
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="card-icon mb-3">
+            <i class="bi bi-building fs-3"></i>
+          </div>
+          <h5 class="card-title" style="color: var(--primary-color)">
+            For Employers
+          </h5>
+          <ul class="text-start mt-3" style="color: var(--text-primary)">
+            <li>Promote eco-friendly commuting within your organization</li>
+            <li>Measure and report overall employee impact</li>
+            <li>Enhance CSR and sustainability initiatives</li>
+            <li>Reduce organizational carbon footprint</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="eco-section">
+  <div class="container">
+    <h2 class="text-center mb-4" style="color: var(--primary-color)">
+      Credit Earning Potential by Transport Method
+    </h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-eco">
+        <thead>
+          <tr>
+            <th>Transport</th>
+            <th>Carbon Savings (kg/km)</th>
+            <th>Credits for 10km</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><i class="bi bi-bicycle transport-icon"></i> Bicycle</td>
+            <td>0.192</td>
+            <td>1.92 credits</td>
+          </tr>
+          <tr>
+            <td><i class="bi bi-person-walking transport-icon"></i> Walking</td>
+            <td>0.192</td>
+            <td>1.92 credits</td>
+          </tr>
+
+          <tr>
+            <td>
+              <i class="bi bi-bus-front transport-icon"></i> public Transport
+            </td>
+            <td>0.103</td>
+            <td>1.03 credits</td>
+          </tr>
+          <tr>
+            <td><i class="bi bi-people transport-icon"></i> Prvt Vechile</td>
+            <td>0.096</td>
+            <td>0.96 credits</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="my-5 text-center">
+  <div class="container">
+    <h2 style="color: var(--primary-color)">Join Our Environmental Movement</h2>
+    <p class="lead mb-4">
+      Start earning rewards for your sustainable commute choices today
+    </p>
+    <a
+      href="{{ url_for('main.signupPage') }}"
+      class="btn btn-lg"
+      style="background-color: var(--primary-color); color: white"
+    >
+      Apply Now
+    </a>
+  </div>
+</section>
+
+<!-- Add "How It Works", Success Stories, CTA, etc., using similar layout -->
+
+{% endblock %}

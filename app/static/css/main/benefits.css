@@ -1,0 +1,71 @@
+  /* Custom styles specific to home page */
+  header {
+    background: linear-gradient(135deg, #3d8c40 0%, #2c7233 100%) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(44, 74, 52, 0.15);
+    margin-bottom: 2rem;
+  }
+
+  .lead {
+    color: var(--text-secondary);
+  }
+
+  .section-title {
+    color: var(--primary-color);
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+
+  .card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(44, 74, 52, 0.1);
+  }
+
+  .card-icon {
+    color: var(--primary-color);
+    background-color: rgba(61, 140, 64, 0.1);
+    padding: 15px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    display: inline-block;
+  }
+
+  .table-eco {
+    background-color: var(--bg-surface);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table-eco thead {
+    background-color: rgba(61, 140, 64, 0.2);
+  }
+
+  .table-eco th {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  .transport-icon {
+    color: var(--primary-color);
+    margin-right: 8px;
+  }
+
+  .eco-section {
+    background-color: var(--bg-darker);
+    border-radius: 8px;
+    padding: 3rem 0;
+    margin: 2rem 0;
+  }
+  header {
+    background: linear-gradient(to right, #2a384d, #1e2b3a) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(44, 74, 52, 0.15);
+    margin-bottom: 2rem;
+  }

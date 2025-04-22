@@ -1,0 +1,420 @@
+{% extends "base.html" %} {% block title %}Carbon Credit Card | Login{% endblock
+%} {% block extra_css %}
+<link rel="stylesheet" href="../../static/css/auth/login.css" />
+{% endblock %} {% block content %}
+<div class="login-container my-4">
+  <!-- Left side - Brand -->
+  <div class="brand-section">
+    <div>
+      <div class="brand-header">
+        <svg class="icon brand-icon" viewBox="0 0 24 24">
+          <path d="M6 3v12c0 2.2 1.8 4 4 4s4-1.8 4-4V3"></path>
+          <path
+            d="M18 3c-1.9 3.3-3.2 6.7-3.9 10.1-.1.5.3 1 .8 1h1.2c.6 0 1.1-.5 1-1.1-.5-2.5-.7-5.1-.2-7.6.1-.4.4-.5.8-.4.4.1.8.4.8.8v1.8c0 3.8 0 6.3 2 8.9.2.2.3.5.3.8v2.8c0 .3-.2.5-.5.5h-6c-.3 0-.5-.2-.5-.5v-.4c0-2 1.7-3.6 3.7-3.6h.2"
+          ></path>
+        </svg>
+        <div class="brand-title">Carbon Credit Card</div>
+      </div>
+      <p class="brand-description">
+        Welcome to the future of sustainable finance. Log in to manage your
+        carbon credit portfolio.
+      </p>
+    </div>
+    <div class="brand-quote">
+      "Every transaction is a step towards a greener planet."
+    </div>
+  </div>
+
+  <!-- Right side - Login -->
+  <div class="login-section">
+    <!-- User Type Selector -->
+    <div id="userTypeSelector">
+      <h2 class="section-title">Welcome Back</h2>
+      {% if message %}
+      <h5 style="color: red">{{message}}</h5>
+      {% endif %}
+      <p class="section-subtitle">
+        Please select your account type to continue
+      </p>
+
+      <div class="user-type-container">
+        <!-- Employee Button -->
+        <button class="user-type-button" data-user-type="employee">
+          <div class="user-type-icon-container">
+            <svg class="icon user-type-icon" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="user-type-text">
+            <div class="user-type-name">Employee</div>
+            <div class="user-type-description">
+              Individual users tracking personal carbon credits
+            </div>
+          </div>
+        </button>
+
+        <!-- Employer Button -->
+        <button class="user-type-button" data-user-type="employer">
+          <div class="user-type-icon-container">
+            <svg class="icon user-type-icon" viewBox="0 0 24 24">
+              <path
+                d="M20 7h-4V3H8v4H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0-2-.9 2-2V9c0-1.1-.9-2-2-2zM8 3h8v4H8V3zm8 14H8v-2h8v2zm0-4H8v-2h8v2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="user-type-text">
+            <div class="user-type-name">Employer</div>
+            <div class="user-type-description">
+              Companies managing organization carbon credits
+            </div>
+          </div>
+        </button>
+
+        <!-- Bank Button -->
+        <button class="user-type-button" data-user-type="bank">
+          <div class="user-type-icon-container">
+            <svg class="icon user-type-icon" viewBox="0 0 24 24">
+              <path
+                d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"
+              ></path>
+            </svg>
+          </div>
+          <div class="user-type-text">
+            <div class="user-type-name">Bank</div>
+            <div class="user-type-description">
+              Financial institutions administering the program
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Login Form - Employee -->
+    <div id="employeeLoginForm" class="hidden">
+      <button class="back-button" id="backFromEmployee">
+        <svg class="icon icon-sm back-button-icon" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        <span>Back</span>
+      </button>
+
+      <h2 class="section-title">Employee Login</h2>
+      <p class="section-subtitle">
+        Enter your credentials to access your dashboard
+      </p>
+
+      <form
+        id="employeeForm"
+        action="{{ url_for('main.login_submit_Page',role='employee') }}"
+        method="POST"
+      >
+        <div class="form-group">
+          <label class="form-label" for="employeeEmail">Email Address</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input
+              type="email"
+              id="employeeEmail"
+              name="email"
+              class="form-input"
+              placeholder="name@company.com"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeePassword">Password</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="employeePassword"
+              name="password"
+              class="form-input"
+              placeholder="••••••••"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-for="employeePassword"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div class="remember-me">
+            <input type="checkbox" id="employeeRemember" name="remember" />
+            <label for="employeeRemember">Remember me</label>
+          </div>
+          <a href="" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account?
+        <a href="">Create an account</a>
+      </div>
+    </div>
+
+    <!-- Login Form - Employer -->
+    <div id="employerLoginForm" class="hidden">
+      <button class="back-button" id="backFromEmployer">
+        <svg class="icon icon-sm back-button-icon" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        <span>Back</span>
+      </button>
+
+      <h2 class="section-title">Employer Login</h2>
+      <p class="section-subtitle">
+        Enter your credentials to access your dashboard
+      </p>
+
+      <form
+        id="employerForm"
+        action="{{ url_for('main.login_submit_Page',role='employer') }}"
+        method="POST"
+      >
+        <div class="form-group">
+          <label class="form-label" for="employerEmail">Email Address</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input
+              type="email"
+              id="employerEmail"
+              name="email"
+              class="form-input"
+              placeholder="name@company.com"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employerPassword">Password</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="employerPassword"
+              name="password"
+              class="form-input"
+              placeholder="••••••••"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-for="employerPassword"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div class="remember-me">
+            <input type="checkbox" id="employerRemember" name="remember" />
+            <label for="employerRemember">Remember me</label>
+          </div>
+          <a href="" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account?
+        <a href="">Create an account</a>
+      </div>
+    </div>
+
+    <!-- Login Form - Bank -->
+    <div id="bankLoginForm" class="hidden">
+      <button class="back-button" id="backFromBank">
+        <svg class="icon icon-sm back-button-icon" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        <span>Back</span>
+      </button>
+
+      <h2 class="section-title">Bank Login</h2>
+      <p class="section-subtitle">
+        Enter your credentials to access your dashboard
+      </p>
+
+      <form
+        id="bankForm"
+        action="{{ url_for('main.login_submit_Page',role='bank') }}"
+        method="POST"
+      >
+        <div class="form-group">
+          <label class="form-label" for="bankEmail">Email Address</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input
+              type="email"
+              id="bankEmail"
+              name="email"
+              class="form-input"
+              placeholder="name@bank.com"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bankPassword">Password</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="bankPassword"
+              name="password"
+              class="form-input"
+              placeholder="••••••••"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-for="bankPassword"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div class="remember-me">
+            <input type="checkbox" id="bankRemember" name="remember" />
+            <label for="bankRemember">Remember me</label>
+          </div>
+          <a href="" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  // DOM elements
+  const userTypeSelector = document.getElementById("userTypeSelector");
+  const employeeLoginForm = document.getElementById("employeeLoginForm");
+  const employerLoginForm = document.getElementById("employerLoginForm");
+  const bankLoginForm = document.getElementById("bankLoginForm");
+
+  // User type buttons
+  const userTypeButtons = document.querySelectorAll(".user-type-button");
+
+  // Back buttons
+  const backFromEmployee = document.getElementById("backFromEmployee");
+  const backFromEmployer = document.getElementById("backFromEmployer");
+  const backFromBank = document.getElementById("backFromBank");
+
+  // Password toggle buttons
+  const passwordToggles = document.querySelectorAll(".password-toggle");
+
+  // Forms
+  const employeeForm = document.getElementById("employeeForm");
+  const employerForm = document.getElementById("employerForm");
+  const bankForm = document.getElementById("bankForm");
+
+  // Handle user type selection
+  userTypeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const userType = button.getAttribute("data-user-type");
+      userTypeSelector.classList.add("hidden");
+
+      if (userType === "employee") {
+        employeeLoginForm.classList.remove("hidden");
+      } else if (userType === "employer") {
+        employerLoginForm.classList.remove("hidden");
+      } else if (userType === "bank") {
+        bankLoginForm.classList.remove("hidden");
+      }
+    });
+  });
+
+  // Handle back buttons
+  function handleBack() {
+    employeeLoginForm.classList.add("hidden");
+    employerLoginForm.classList.add("hidden");
+    bankLoginForm.classList.add("hidden");
+    userTypeSelector.classList.remove("hidden");
+  }
+
+  backFromEmployee.addEventListener("click", handleBack);
+  backFromEmployer.addEventListener("click", handleBack);
+  backFromBank.addEventListener("click", handleBack);
+
+  // Handle password toggles
+  passwordToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const inputId = toggle.getAttribute("data-for");
+      const input = document.getElementById(inputId);
+
+      if (input.type === "password") {
+        input.type = "text";
+        toggle.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      `;
+      } else {
+        input.type = "password";
+        toggle.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      `;
+      }
+    });
+  });
+</script>
+{% endblock %}

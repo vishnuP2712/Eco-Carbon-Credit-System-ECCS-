@@ -1,0 +1,337 @@
+{% extends "base.html" %} {% block title %}Carbon Credit Card | Sign Up{%
+endblock %} {% block extra_css %}
+<link rel="stylesheet" href="../../static/css/auth/signup.css" />
+{% endblock %} {% block content %}
+<div class="signup-container my-4">
+  <!-- Left side - Brand -->
+  <div class="brand-section">
+    <div>
+      <div class="brand-header">
+        <svg class="icon brand-icon" viewBox="0 0 24 24">
+          <path d="M6 3v12c0 2.2 1.8 4 4 4s4-1.8 4-4V3"></path>
+          <path
+            d="M18 3c-1.9 3.3-3.2 6.7-3.9 10.1-.1.5.3 1 .8 1h1.2c.6 0 1.1-.5 1-1.1-.5-2.5-.7-5.1-.2-7.6.1-.4.4-.5.8-.4.4.1.8.4.8.8v1.8c0 3.8 0 6.3 2 8.9.2.2.3.5.3.8v2.8c0 .3-.2.5-.5.5h-6c-.3 0-.5-.2-.5-.5v-.4c0-2 1.7-3.6 3.7-3.6h.2"
+          ></path>
+        </svg>
+        <div class="brand-title">Carbon Credit Card</div>
+      </div>
+      <p class="brand-description">
+        Join the future of sustainable finance. Create an account to start
+        managing your carbon credit portfolio.
+      </p>
+    </div>
+    <div class="brand-quote">
+      "Be part of the solution. Track, reduce, and offset your carbon
+      footprint."
+    </div>
+  </div>
+
+  <!-- Right side - Unified Signup -->
+  <div class="signup-section">
+    <h2 class="section-title">Create Account</h2>
+    <p class="section-subtitle">
+      Join Carbon Credit Card and begin managing your carbon credits
+    </p>
+
+    <form
+      id="unifiedSignupForm"
+      action="{{ url_for('main.signupPage') }}"
+      method="POST"
+    >
+      {{ form.hidden_tag() }}
+
+      <!-- Account Type Selection -->
+      <div class="form-group">
+        <label class="form-label">Account Type</label>
+        <div class="account-type-selector">
+          <div class="account-type-option">
+            <input
+              type="radio"
+              id="accountTypeEmployee"
+              name="accountType"
+              value="employee"
+              checked
+            />
+            <label for="accountTypeEmployee">
+              <div class="account-type-icon-container">
+                <svg class="icon user-type-icon" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div class="account-type-text">
+                <div class="account-type-name">Employee</div>
+                <div class="account-type-description">
+                  Individual users tracking personal carbon credits
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div class="account-type-option">
+            <input
+              type="radio"
+              id="accountTypeEmployer"
+              name="accountType"
+              value="employer"
+              selected
+            />
+            <label for="accountTypeEmployer">
+              <div class="account-type-icon-container">
+                <svg class="icon user-type-icon" viewBox="0 0 24 24">
+                  <path
+                    d="M20 7h-4V3H8v4H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0-2-.9 2-2V9c0-1.1-.9-2-2-2zM8 3h8v4H8V3zm8 14H8v-2h8v2zm0-4H8v-2h8v2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="account-type-text">
+                <div class="account-type-name">Employer</div>
+                <div class="account-type-description">
+                  Companies managing organization carbon credits
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Company/Organization Information -->
+      <div id="companySection">
+        <div class="form-group company-field">
+          <label class="form-label">Company Name</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"></path>
+              <path d="M1 21h22"></path>
+              <path d="M9 7h6"></path>
+              <path d="M9 11h6"></path>
+              <path d="M9 15h6"></path>
+            </svg>
+            {{form.company_name(class="form-input")}}
+          </div>
+        </div>
+
+        <div class="form-group employee-field">
+          <label class="form-label">Organization</label>
+          <div class="form-input-container">
+            <svg class="icon form-input-icon" viewBox="0 0 24 24">
+              <path d="M3 6l3 18h12l3-18H3z"></path>
+              <path d="M3 6h18M9 6V3h6v3"></path>
+            </svg>
+            {{ form.organization(class="form-input", id="organizationSelect") }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <div class="form-input-container">
+              <svg class="icon form-input-icon" viewBox="0 0 24 24">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"
+                ></path>
+                <path d="M6 20v-2c0-2.21 3.58-4 6-4s6 1.79 6 4v2"></path>
+              </svg>
+              {{ form.first_name(class="form-input", placeholder="John") }}
+            </div>
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <div class="form-input-container">
+              <svg class="icon form-input-icon" viewBox="0 0 24 24">
+                <path
+                  d="M20 21v-2a4 4 0 0 0-3-3.87M4 21v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"
+                ></path>
+              </svg>
+              {{ form.last_name(class="form-input", placeholder="Doe") }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="form-input-container">
+          <svg class="icon form-input-icon" viewBox="0 0 24 24">
+            <path
+              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+            ></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          {{ form.email(class="form-input", placeholder="name@company.com") }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <div class="form-input-container">
+          <svg class="icon form-input-icon" viewBox="0 0 24 24">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+            ></path>
+          </svg>
+          {{ form.phone(class="form-input", placeholder="+1 (555) 123-4567") }}
+        </div>
+      </div>
+
+      <!-- Password Fields -->
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="form-input-container">
+              <svg class="icon form-input-icon" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              {{ form.password(class="form-input", id="password",
+              placeholder="••••••••") }}
+              <button type="button" class="password-toggle" data-for="password">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="form-input-container">
+              <svg class="icon form-input-icon" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              {{ form.confirm_password(class="form-input", id="confirmPassword",
+              placeholder="••••••••") }}
+              <button
+                type="button"
+                class="password-toggle"
+                data-for="confirmPassword"
+              >
+                <svg class="icon" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms Agreement -->
+      <div class="form-footer">
+        <div class="terms-agreement">
+          <input type="checkbox" id="terms" name="terms" required />
+          <label for="terms" id="termsLabel">
+            I agree to the <a href="#">Terms of Service</a> and
+            <a href="#">Privacy Policy</a>
+            <span class="employer-terms-extra"
+              >and confirm I have authority to bind the company to these
+              terms.</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      {{ form.submit(class="signup-button") }}
+    </form>
+    {% if message %}
+    <h5 style="color: red; text-align: center">{{ message }}</h5>
+    {% endif %} {% if form.errors%}
+    <div class="form-errors">
+      <ul>
+        {% for field, errors in form.errors.items() %} {% for error in errors %}
+        <li style="color: red; text-align: center">
+          <strong style="color: red; text-align: center">{{ field }}:</strong>
+          {{ error }}
+        </li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="login-link">
+      Already have an account?
+      <a href="">Sign in</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Toggle password visibility
+    document.querySelectorAll(".password-toggle").forEach((button) => {
+      button.addEventListener("click", function () {
+        const inputId = this.getAttribute("data-for");
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+          input.type = "text";
+          this.classList.add("active");
+        } else {
+          input.type = "password";
+          this.classList.remove("active");
+        }
+      });
+    });
+
+    // Handle account type toggle
+    const accountTypeEmployer = document.getElementById("accountTypeEmployer");
+    const accountTypeEmployee = document.getElementById("accountTypeEmployee");
+    const companyField = document.querySelector(".company-field");
+    const employeeField = document.querySelector(".employee-field");
+    const employerTermsExtra = document.querySelector(".employer-terms-extra");
+    const otherOrganizationField = document.querySelector(
+      ".other-organization-field"
+    );
+    const organizationSelect = document.getElementById("organizationSelect");
+
+    function updateFormFields() {
+      if (accountTypeEmployer.checked) {
+        companyField.style.display = "block";
+        document.querySelectorAll(".employee-field").forEach((field) => {
+          field.style.display = "none";
+        });
+        employerTermsExtra.style.display = "inline";
+      } else {
+        companyField.style.display = "none";
+        employeeField.style.display = "block";
+        employerTermsExtra.style.display = "none";
+
+        // Check if "Other" is selected
+        if (organizationSelect.value === "other") {
+          otherOrganizationField.style.display = "block";
+        } else {
+          otherOrganizationField.style.display = "none";
+        }
+      }
+    }
+
+    // Handle "Other" option in organization dropdown
+    if (organizationSelect) {
+      organizationSelect.addEventListener("change", function () {
+        if (this.value === "other") {
+          otherOrganizationField.style.display = "block";
+        } else {
+          otherOrganizationField.style.display = "none";
+        }
+      });
+    }
+
+    accountTypeEmployer.addEventListener("change", updateFormFields);
+    accountTypeEmployee.addEventListener("change", updateFormFields);
+
+    // Initialize form state
+    updateFormFields();
+  });
+</script>
+{% endblock %}

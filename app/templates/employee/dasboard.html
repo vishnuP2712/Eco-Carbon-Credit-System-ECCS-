@@ -1,0 +1,750 @@
+{% extends "base.html" %} {% block title %}Employee Dashboard - Carbon Credit
+Card{% endblock %} {% block extra_css %}
+<!-- Leaflet CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<style>
+  .stats-card {
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+    background-color: #f8f9fa !important;
+  }
+  .stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-sm);
+  }
+  .travel-mode-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+  }
+  .progress {
+    height: 0.8rem;
+    background-color: #e9ecef;
+  }
+  .travel-log-item {
+    border-left: 3px solid #e2e8f0;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  .travel-log-item:hover {
+    border-left-color: var(--primary-color);
+    background-color: #f0f4f8;
+  }
+  .carbon-credit-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  .travel-mode-btn {
+    transition: all 0.3s;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+  }
+  .travel-mode-btn:hover,
+  .travel-mode-btn.active {
+    background-color: #f0f7ff;
+    border-color: var(--primary-color);
+  }
+  .monthly-target {
+    position: relative;
+    height: 120px;
+  }
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+  }
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .list-group-item {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+  }
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }
+  .form-control,
+  .form-select {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+  }
+  .form-control:focus,
+  .form-select:focus {
+    background-color: #ffffff;
+    border-color: var(--primary-color);
+  }
+
+  /* New Map Styles from GreenCred */
+  #map-container {
+    height: 300px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+
+  .route-info {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 20px;
+    border-left: 4px solid #81c784;
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(46, 125, 50, 0.3);
+    border-radius: 50%;
+    border-top-color: #2e7d32;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="row mb-4">
+  <div class="col-md-12">
+    <h2 class="section-title">Employee Dashboard</h2>
+    <p class="text-secondary">
+      Track your sustainable travel, earn carbon credits, and make a positive
+      impact on the environment.
+    </p>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <!-- Carbon Credits Summary -->
+  <div class="col-md-4 mb-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title text-primary">Carbon Credits</h5>
+        <div class="d-flex flex-column align-items-center">
+          <div class="carbon-credit-display mb-2">
+            {{ total_credits | default('750') }}
+          </div>
+          <p class="text-secondary">Credits Earned</p>
+          <div class="progress w-100 mt-2">
+            <div
+              class="progress-bar bg-primary"
+              role="progressbar"
+              style="width: {{percent_complete| round(2)}}%"
+              aria-valuenow="75"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+          <p class="text-secondary mt-2">
+            <small>{{percent_complete}}% of your monthly target</small>
+          </p>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent">
+        <a
+          href="#"
+          class="btn btn-sm btn-outline-primary w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#rewardsModal"
+        >
+          View Rewards
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- This Month's Stats -->
+  <div class="col-md-8 mb-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title text-primary">This Month's Stats</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="stats-card p-3 rounded">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h6 class="text-secondary mb-1">CO₂ Saved</h6>
+                  <h4 class="text-success">{{green_credit}} kg</h4>
+                </div>
+                <div class="align-self-center">
+                  <i class="bi bi-cloud-check text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="stats-card p-3 rounded">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h6 class="text-secondary mb-1">Total Trips</h6>
+                  <h4 class="text-primary">{{total_trips}}</h4>
+                </div>
+                <div class="align-self-center">
+                  <i class="bi bi-geo-alt text-primary"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="stats-card p-3 rounded">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h6 class="text-secondary mb-1">Green Trips</h6>
+                  <h4 class="text-warning">{{green_trips}} %</h4>
+                </div>
+                <div class="align-self-center">
+                  <i class="bi bi-award text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="monthly-target mt-4">
+          <h6 class="text-secondary mb-3">Monthly Sustainability Progress</h6>
+          <div class="progress mb-3">
+            <div
+              class="progress-bar bg-success"
+              role="progressbar"
+              style="width: {{month['public_transport']}}%"
+              aria-valuenow="45"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              Public
+            </div>
+          </div>
+          <div class="progress mb-3">
+            <div
+              class="progress-bar bg-primary"
+              role="progressbar"
+              style="width: {{ month['walking'] }}%"
+              aria-valuenow="25"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              Walking
+            </div>
+          </div>
+          <div class="progress mb-3">
+            <div
+              class="progress-bar bg-info"
+              role="progressbar"
+              style="width: {{month['bicycle']}}%"
+              aria-valuenow="15"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              Bicycle
+            </div>
+          </div>
+          <div class="progress mb-3">
+            <div
+              class="progress-bar bg-warning"
+              role="progressbar"
+              style="width: {{month['private_transport']}}%"
+              aria-valuenow="15"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              Private
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Travel Log and Trip Recording Section -->
+<div class="row mb-4">
+  <!-- Record New Trip -->
+  <div class="col-md-5 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0 text-primary">Record New Trip</h5>
+      </div>
+      <div class="card-body">
+        <form
+          id="newTripForm"
+          action="{{ url_for('main.record_trip') }}"
+          method="POST"
+        >
+          <div class="mb-3">
+            <label for="tripDate" class="form-label">Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="tripDate"
+              name="tripDate"
+              value="{{ today|default('') }}"
+            />
+          </div>
+
+          <!-- New Map Implementation for Address Inputs -->
+          <div class="row mb-3">
+            <div class="col-md-6 mb-3">
+              <label for="from-address" class="form-label">From Address</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="bi bi-map-marker"></i
+                ></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="from-address"
+                  name="originAddress"
+                  placeholder="Starting location"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="to-address" class="form-label">To Address</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-flag"></i></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="to-address"
+                  name="destinationAddress"
+                  placeholder="Destination"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-grid gap-2 d-md-flex">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="calculate-route"
+              >
+                <i class="bi bi-map"></i> Calculate Route
+              </button>
+              <select
+                class="form-select"
+                id="transport-mode"
+                name="travelMode"
+                style="max-width: 200px"
+              >
+                <option value="driving">Private Vehicle</option>
+                <option value="walking">Walking</option>
+                <option value="bicycling">Bicycle</option>
+                <option value="transit">Public Transit</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Map Container -->
+          <div class="mb-3">
+            <div id="map-container">
+              <div id="map"></div>
+            </div>
+          </div>
+
+          <!-- Route Details -->
+          <div id="route-details" class="route-info d-none mb-3">
+            <div class="row">
+              <div class="col-md-4">
+                <h6>Distance</h6>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="distance-value"
+                  name="distance"
+                  placeholder="Enter distance"
+                  value="0"
+                />
+              </div>
+              <div class="col-md-4">
+                <h6>Carbon Footprint</h6>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="carbon-value"
+                  name="carbon"
+                  placeholder="Enter carbon footprint"
+                  value="0"
+                />
+              </div>
+              <div class="col-md-4">
+                <h6>Green Cred</h6>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="greencred-value"
+                  name="greencred"
+                  placeholder="Enter green cred"
+                  value="0"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="tripPurpose" class="form-label">Purpose</label>
+            <select class="form-select" id="tripPurpose" name="tripPurpose">
+              <option value="commute">Work Commute</option>
+              <option value="meeting">Business Meeting</option>
+              <option value="field_work">Field Work</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="tripNotes" class="form-label">Notes</label>
+            <textarea
+              class="form-control"
+              id="tripNotes"
+              name="tripNotes"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <input
+            type="submit"
+            class="btn btn-success w-100"
+            id="record-trip-btn"
+            value=" Record Trip"
+          />
+          <i class="bi bi-plus-circle me-2"></i>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Travel Log -->
+  <div class="col-md-7 mb-4">
+    <div class="card">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0 text-primary">Recent Travel Log</h5>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#allTripsModal"
+        >
+          View All
+        </button>
+      </div>
+      <div class="card-body">
+        {% for trip in recent_trips[-4:] %}
+        <div class="travel-log-item">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6>{{ trip.purpose }}</h6>
+              <p class="text-secondary mb-1">
+                {% if trip.travel_mode == 'public_transit' %}
+                <i class="bi bi-bus-front text-success"></i>
+                {% elif trip.travel_mode == 'carpooling' %}
+                <i class="bi bi-people text-primary"></i>
+                {% elif trip.travel_mode == 'ridesharing' %}
+                <i class="bi bi-car-front text-info"></i>
+                {% elif trip.travel_mode == 'private_vehicle' %}
+                <i class="bi bi-car-front-fill text-secondary"></i>
+                {% else %}
+                <i class="bi bi-geo-alt text-muted"></i>
+                {% endif %} {{ trip.travel_mode.replace("_", " ").title() }} -
+                {{ "%.1f"|format(trip.distance) }} miles
+              </p>
+              <p class="mb-1 text-muted">
+                <strong>From:</strong> {{ trip.origin_address }}<br />
+                <strong>To:</strong> {{ trip.destination_address }}
+              </p>
+              <small class="text-muted">
+                {{ trip.date.strftime('%b %d, %Y') }}
+              </small>
+            </div>
+            <div class="align-self-center text-end">
+              <span
+                class="badge bg-{{ 'success' if trip.green_cred|int >= 20 else 'secondary' }}"
+              >
+                +{{ trip.green_cred}} Credits </span
+              ><br />
+              <small class="text-muted">Points Gained</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Environmental Impact and Credit Redemption Options -->
+<div class="row mb-12">
+  <!-- Environmental Impact -->
+  <div class="col-md-12 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0 text-primary">Your Environmental Impact</h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-4">
+            <div class="p-3">
+              <h3 class="text-success">{{ total_credits }}</h3>
+              <p class="text-secondary">kg CO₂ Saved</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-3">
+              <h3 class="text-primary">{{ tree_planted }}</h3>
+              <p class="text-secondary">Trees Equivalent</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-3">
+              <h3 class="text-info">{{green_trips}}</h3>
+              <p class="text-secondary">Green Trips</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <h6 class="text-secondary mb-3">Your Impact In Your Company</h6>
+          <div class="progress mb-2">
+            <div
+              class="progress-bar bg-success"
+              role="progressbar"
+              style="width: {{leaderboard_position}}%"
+              aria-valuenow="82"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <small>You have contributed {{leaderboard_position}}!</small>
+            <small>your Company</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credit Redemption Options
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0 text-primary">Redeem Your Credits</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <p class="mb-0">Available Credits:</p>
+          <h4 class="carbon-credit-display mb-0">
+            {{ credits|default('750') }}
+          </h4>
+        </div>
+
+        <div class="list-group">
+          <a
+            href="#"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h6 class="mb-1">Public Transit Pass</h6>
+              <p class="text-secondary mb-0">
+                <small>Monthly unlimited travel pass</small>
+              </p>
+            </div>
+            <span class="badge bg-primary rounded-pill">500 credits</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h6 class="mb-1">Eco-Friendly Store Voucher</h6>
+              <p class="text-secondary mb-0">
+                <small>$25 voucher for sustainable products</small>
+              </p>
+            </div>
+            <span class="badge bg-primary rounded-pill">300 credits</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h6 class="mb-1">Plant a Tree</h6>
+              <p class="text-secondary mb-0">
+                <small>Contribute to reforestation efforts</small>
+              </p>
+            </div>
+            <span class="badge bg-primary rounded-pill">100 credits</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h6 class="mb-1">CO₂ Offset Certificate</h6>
+              <p class="text-secondary mb-0">
+                <small>Offset 1 ton of carbon emissions</small>
+              </p>
+            </div>
+            <span class="badge bg-primary rounded-pill">400 credits</span>
+          </a>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent">
+        <a href="#" class="btn btn-sm btn-success w-100">View All Rewards</a>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+<div
+  class="modal fade"
+  id="allTripsModal"
+  tabindex="-1"
+  aria-labelledby="allTripsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="allTripsModalLabel">
+          All Travel Logs
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        {% for trip in recent_trips %}
+        <div class="border-bottom pb-2 mb-2">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="mb-1">{{ trip.purpose }}</h6>
+              <p class="mb-1 text-secondary">
+                {% if trip.travel_mode == 'public_transit' %}
+                <i class="bi bi-bus-front text-success"></i>
+                {% elif trip.travel_mode == 'carpooling' %}
+                <i class="bi bi-people text-primary"></i>
+                {% elif trip.travel_mode == 'ridesharing' %}
+                <i class="bi bi-car-front text-info"></i>
+                {% elif trip.travel_mode == 'private_vehicle' %}
+                <i class="bi bi-car-front-fill text-secondary"></i>
+                {% else %}
+                <i class="bi bi-geo-alt text-muted"></i>
+                {% endif %} {{ trip.travel_mode.replace("_", " ").title() }} -
+                {{ "%.1f"|format(trip.distance) }} km
+              </p>
+              <p class="mb-1">
+                <strong>From:</strong> {{ trip.origin_address }}<br />
+                <strong>To:</strong> {{ trip.destination_address }}
+              </p>
+              <small class="text-muted">
+                {{ trip.date.strftime('%b %d, %Y') }} at {{
+                trip.time.strftime('%I:%M %p') if trip.time else 'N/A' }}
+              </small>
+            </div>
+            <div class="align-self-center text-end">
+              <span
+                class="badge bg-{{ 'success' if trip.green_cred >= 20 else 'secondary' }}"
+              >
+                +{{ trip.green_cred|int }} Credits </span
+              ><br />
+              <small class="text-muted">Points Gained</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="rewardsModal"
+  tabindex="-1"
+  aria-labelledby="rewardsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="rewardsModalLabel">
+          Green Rewards Leaderboard
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Employee</th>
+              <th scope="col">Total Credits</th>
+              <th scope="col">Badges</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in reward_rankings %}
+            <tr>
+              <td>#{{ loop.index }}</td>
+              <td>
+                <strong>{{ user.first_name }}</strong><br />
+                <small class="text-muted">{{ user.employee_id }}</small>
+              </td>
+              <td>
+                <span class="badge bg-success">{{ user.credits }} Points</span>
+              </td>
+              <td>
+                {% if user.credits >= 100 %}
+                <span class="badge bg-warning text-dark">🌟 Eco Champ</span>
+                {% elif user.credits >= 50 %}
+                <span class="badge bg-info">🌱 Green Guardian</span>
+                {% else %}
+                <span class="badge bg-secondary">🚶 Eco Starter</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../../static/js/employee/dashboard.js"></script>
+{% endblock %}
