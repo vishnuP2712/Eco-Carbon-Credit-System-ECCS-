@@ -115,7 +115,7 @@ def login_submit_Page(role=None):
                 session['role'] = 'bank'
                 session['user'] = "bank001"
                 session['username']= "banker"
-                redirect(url_for('main.bankdashboard'))
+                redirect(url_for('main.bankdashboardPage'))
     return render_template('auth/login.html')
 
 
